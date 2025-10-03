@@ -1,0 +1,119 @@
+{% extends "_layout.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Conteúdo principal com scroll e padding para header fixo -->
+<div class="flex-1 overflow-auto pt-[150px] pb-24">
+
+    <!-- Header vermelho fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white" style="font-family: 'Poppins', sans-serif;">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white" style="font-family: 'Poppins', sans-serif;">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center shadow-md">
+            <span class="text-[22px] font-semibold text-[#636161]" style="font-family: 'Poppins', sans-serif;">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+    <div class="p-6 max-w-5xl mx-auto space-y-6">
+        <a href="{{ url_for('home') }}" class="flex items-center text-red-primary mb-6 hover:underline" style="font-family: 'Poppins', sans-serif;">
+            <span class="text-2xl mr-2">←</span>
+            <span class="text-lg font-medium">Back</span>
+        </a>
+
+        <h1 class="text-2xl font-semibold text-gray-800" style="font-family: 'Poppins', sans-serif;">Dashboard Overview</h1>
+
+        <!-- Grid de métricas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Total Vehicles -->
+            <div class="bg-white shadow-lg rounded-xl p-6 border-l-8 border-red-primary hover:shadow-2xl transition duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 font-medium text-sm" style="font-family: 'Poppins', sans-serif;">Total Vehicles Registered</p>
+                        <h2 class="text-3xl font-bold mt-2" style="font-family: 'Poppins', sans-serif;">{{ total_vehicles }}</h2>
+                    </div>
+                    <div class="text-red-primary">
+                        <img src="/static/img/car.svg" alt="Car Icon" class="w-8 h-8">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Awaiting Diagnostic -->
+            <div class="bg-white shadow-lg rounded-xl p-6 border-l-8 border-yellow-500 hover:shadow-2xl transition duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 font-medium text-sm" style="font-family: 'Poppins', sans-serif;">Awaiting Diagnostic</p>
+                        <h2 class="text-3xl font-bold mt-2" style="font-family: 'Poppins', sans-serif;">{{ needs_diagnostic }}</h2>
+                    </div>
+                    <div class="text-yellow-500">
+                        <img src="/static/img/time.svg" alt="Time Icon" class="w-8 h-8">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostic Complete -->
+            <div class="bg-white shadow-lg rounded-xl p-6 border-l-8 border-indigo-500 hover:shadow-2xl transition duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 font-medium text-sm" style="font-family: 'Poppins', sans-serif;">Diagnostic Complete</p>
+                        <h2 class="text-3xl font-bold mt-2" style="font-family: 'Poppins', sans-serif;">{{ diagnostic_added }}</h2>
+                    </div>
+                    <div>
+                        <img src="/static/img/check.svg" alt="Check Icon" class="w-8 h-8">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Parts Requested -->
+            {% if total is defined and total > 0 %}
+            <div class="bg-white shadow-lg rounded-xl p-6 border-l-8 border-gray-400 hover:shadow-2xl transition duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 font-medium text-sm" style="font-family: 'Poppins', sans-serif;">Total Parts Requested</p>
+                        <h2 class="text-3xl font-bold mt-2" style="font-family: 'Poppins', sans-serif;">{{ total }}</h2>
+                    </div>
+                    <div>
+                        <img src="/static/img/parts.svg" alt="Parts Icon" class="w-8 h-8">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Parts Pending / Ordered -->
+            {% if pending is defined and pending > 0 %}
+            <div class="bg-white shadow-lg rounded-xl p-6 border-l-8 border-red-500 hover:shadow-2xl transition duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 font-medium text-sm" style="font-family: 'Poppins', sans-serif;">Parts Pending / Ordered</p>
+                        <h2 class="text-3xl font-bold mt-2" style="font-family: 'Poppins', sans-serif;">{{ pending + ordered }}</h2>
+                    </div>
+                    <div class="text-red-500 text-5xl">⏳</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <p class="mt-6 text-gray-500 text-sm" style="font-family: 'Poppins', sans-serif;">These metrics reflect the real-time data in your current session.</p>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %} 
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-100 p-4 text-center text-gray-600" style="font-family: 'Poppins', sans-serif;">
+    Meu Footer
+</footer>
+{% endblock %}

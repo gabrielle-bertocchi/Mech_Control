@@ -1,0 +1,85 @@
+{% extends "_layout.html" %}
+{% block title %}Request Part{% endblock %}
+
+{% block content %}
+<!-- Conteúdo principal com scroll e padding para header fixo -->
+<div class="flex-1 overflow-auto pt-[150px] pb-24">
+
+    <!-- Header vermelho fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white font-poppins">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white font-poppins">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center shadow-md">
+            <span class="text-[22px] font-semibold text-[#636161] font-poppins">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+    <div class="p-6 max-w-4xl mx-auto">
+
+        <a href="{{ url_for('home') }}" class="text-red-primary mb-4 block font-poppins">
+            <span class="text-xl mr-1">←</span> Back
+        </a>
+
+        <h1 class="text-2xl font-bold mb-6 text-black-primary font-poppins">Part Request</h1>
+
+        <form method="POST" action="{{ url_for('request_part') }}" class="space-y-6">
+
+            <div>
+                <label for="plate" class="block text-gray-700 font-semibold mb-1 font-poppins">Vehicle Plate</label>
+                <input type="text" id="plate" name="plate" placeholder="Ex: YF11 AAA" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-primary text-lg font-poppins" 
+                       required
+                       value="{{ prefill_plate if prefill_plate else '' }}">
+            </div>
+
+            <div>
+                <label for="part_name" class="block text-gray-700 font-semibold mb-1 font-poppins">Part Name</label>
+                <input type="text" id="part_name" name="part_name" placeholder="Ex: Rear Brake Drum" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-primary text-lg font-poppins" 
+                       required>
+            </div>
+
+            <div>
+                <label for="quantity" class="block text-gray-700 font-semibold mb-1 font-poppins">Quantity</label>
+                <input type="number" id="quantity" name="quantity" placeholder="1" 
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-primary text-lg font-poppins" 
+                       min="1" required>
+            </div>
+
+            <div>
+                <label for="notes" class="block text-gray-700 font-semibold mb-1 font-poppins">Additional Notes</label>
+                <textarea id="notes" name="notes" rows="3" placeholder="Urgency, specific location on vehicle, etc."
+                          class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-primary text-lg font-poppins"></textarea>
+            </div>
+
+            <div class="mt-8">
+                <button type="submit" class="w-full py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition duration-200 font-semibold font-poppins">
+                    Submit Part Request
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %} 
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-100 p-4 text-center text-gray-600 font-poppins">
+    Meu Footer
+</footer>
+{% endblock %}

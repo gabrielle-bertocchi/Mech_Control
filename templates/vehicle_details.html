@@ -1,0 +1,88 @@
+{% extends "_layout.html" %}
+{% block title %}Vehicle Details{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-auto pt-[150px] pb-24">
+
+    <!-- Header fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white font-poppins">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white font-poppins">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center">
+            <span class="text-[22px] font-semibold text-[#636161] font-poppins">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="p-6 pb-24 max-w-4xl mx-auto">
+
+        <a href="{{ url_for('home') }}" class="text-red-primary mb-4 block font-poppins">
+            <span class="text-xl mr-1">←</span> Back to Home
+        </a>
+
+        {% if details %}
+            <h1 class="text-2xl font-semibold text-gray-800 font-poppins mb-1">{{ details.plate }}</h1>
+            <p class="text-sm text-gray-600 mb-4 font-poppins">{{ details.model }}</p>
+
+            <!-- Diagnostic Notes -->
+            <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg mb-6 border-l-4 border-red-primary">
+                <h2 class="text-xl font-semibold mb-2 text-gray-800 font-poppins">Diagnostic Notes</h2>
+                <p class="text-gray-700 p-2 text-sm bg-gray-50 border rounded whitespace-pre-wrap font-poppins">{{ details.diagnostic }}</p>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
+                <a href="{{ url_for('request_part', plate=details.plate) }}" 
+                   class="flex-1 flex items-center justify-center px-4 py-3 rounded-lg bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition duration-150 font-poppins">
+                    Request Part
+                </a>
+
+                <a href="{{ url_for('add_diagnostic', plate=details.plate) }}" 
+                   class="flex-1 flex items-center justify-center px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 font-semibold text-sm hover:bg-gray-100 transition duration-150 font-poppins">
+                    Add New Diagnostic
+                </a>
+            </div>
+
+            <!-- Part Requests -->
+            <h2 class="text-xl font-semibold mb-3 text-gray-800 font-poppins">
+                Part Requests for this Vehicle ({{ details.part_requests | length }})
+            </h2>
+
+            <div class="space-y-3">
+                {% for req in details.part_requests %}
+                    <a href="{{ url_for('request_details', request_id=req.id) }}" 
+                       class="block p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 border-l-4 font-poppins
+                              {% if req.status == 'Requested' %} border-yellow-500 
+                              {% elif req.status == 'Approved' %} border-blue-500 
+                              {% elif req.status == 'Delivered' %} border-green-500 
+                              {% else %} border-gray-300 {% endif %}">
+                        <p class="font-medium text-gray-800">{{ req.part }}</p>
+                        <p class="text-sm text-gray-500">Status: {{ req.status }}</p>
+                    </a>
+                {% endfor %}
+
+                {% if not details.part_requests %}
+                    <p class="text-gray-500 text-center mt-8 font-poppins">No parts requested for this vehicle yet.</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p class="text-gray-600 font-poppins">Vehicle details not found.</p>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' %} 
+{% endblock %}

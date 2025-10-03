@@ -1,0 +1,129 @@
+{% extends "_layout.html" %}
+{% block title %}Parts Inbox{% endblock %}
+
+{% block content %}
+<!-- Conteúdo principal com scroll e padding para header fixo -->
+<div class="flex-1 overflow-auto pt-[150px] pb-24">
+
+    <!-- Header vermelho fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white" style="font-family: 'Poppins', sans-serif;">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white" style="font-family: 'Poppins', sans-serif;">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center shadow-md">
+            <span class="text-[22px] font-semibold text-[#636161]" style="font-family: 'Poppins', sans-serif;">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+    <div class="p-4 max-w-4xl mx-auto space-y-6">
+        <!-- Botão voltar -->
+        <a href="{{ url_for('home') }}" class="flex items-center text-red-primary mb-4 hover:underline" style="font-family: 'Poppins', sans-serif;">
+            <span class="text-2xl mr-2">←</span>
+            <span class="text-lg font-medium">Back</span>
+        </a>
+
+        <h1 class="text-2xl font-semibold mb-6 text-gray-800" style="font-family: 'Poppins', sans-serif;">Parts Inbox</h1>
+
+        <!-- Search Form -->
+        <div class="mb-6">
+            <form action="{{ url_for('parts_inbox') }}" method="GET" class="flex gap-3">
+                <input type="text" 
+                       name="search_term" 
+                       placeholder="Search by plate or part" 
+                       value="{{ current_search or '' }}" 
+                       class="flex-grow p-3 text-lg border border-gray-300 rounded-full focus:border-red-600 focus:ring-red-600 font-poppins">
+                
+                {% if current_status %}
+                    <input type="hidden" name="status" value="{{ current_status }}">
+                {% endif %}
+
+                <button type="submit" class="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-150 shadow-md">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Status Filters -->
+        <div class="flex space-x-2 overflow-x-auto pb-4">
+            {% set filter_classes = "px-4 py-2 text-sm font-semibold rounded-full whitespace-nowrap font-poppins" %}
+            <a href="{{ url_for('parts_inbox', search_term=current_search) }}" 
+               class="{{ filter_classes }} {% if not current_status %} border-red-primary bg-red-700 text-white {% else %} border-gray-300 hover:bg-gray-100 {% endif %}">
+                All ({{ requests | length }})
+            </a>
+
+            <a href="{{ url_for('parts_inbox', status='Requested', search_term=current_search) }}" 
+               class="{{ filter_classes }} {% if current_status == 'Requested' %} border-red-primary bg-red-700 text-white {% else %} border-gray-300 bg-red-50 text-red-700 hover:bg-red-100 {% endif %}">
+                Requested
+            </a>
+            
+            <a href="{{ url_for('parts_inbox', status='Ordered', search_term=current_search) }}" 
+               class="{{ filter_classes }} {% if current_status == 'Ordered' %} border-red-primary bg-red-700 text-white {% else %} border-indigo-500 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 {% endif %}">
+                Ordered
+            </a>
+            
+            <a href="{{ url_for('parts_inbox', status='Approved', search_term=current_search) }}" 
+               class="{{ filter_classes }} {% if current_status == 'Approved' %} border-red-primary bg-red-700 text-white {% else %} border-yellow-500 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 {% endif %}">
+                Approved
+            </a>
+            
+            <a href="{{ url_for('parts_inbox', status='Delivered', search_term=current_search) }}" 
+               class="{{ filter_classes }} {% if current_status == 'Delivered' %} border-red-primary bg-red-700 text-white {% else %} border-green-500 bg-green-50 text-green-700 hover:bg-green-100 {% endif %}">
+                Delivered
+            </a>
+        </div>
+
+        <!-- Requests List -->
+        <h2 class="text-xl font-semibold mb-4 text-gray-800" style="font-family: 'Poppins', sans-serif;">Latest requests</h2>
+        <div class="flex flex-col gap-3">
+            {% for req in requests %}
+            <a href="{{ url_for('request_details', request_id=req.id) }}" class="block p-4 bg-white rounded-lg shadow-sm border-l-4 
+                {% if req.status == 'Requested' %} border-red-primary 
+                {% elif req.status == 'Approved' %} border-yellow-500
+                {% elif req.status == 'Delivered' %} border-green-500
+                {% else %} border-gray-500 
+                {% endif %} hover:bg-gray-50 transition duration-150">
+                
+                <div class="flex justify-between items-start mb-1">
+                    <h3 class="text-lg font-semibold text-gray-800" style="font-family: 'Poppins', sans-serif;">{{ req.part }}</h3>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full 
+                        {% if req.status == 'Requested' %} bg-red-100 text-red-700
+                        {% elif req.status == 'Approved' %} bg-yellow-100 text-yellow-700
+                        {% elif req.status == 'Delivered' %} bg-green-100 text-green-700
+                        {% else %} bg-gray-100 text-gray-700
+                        {% endif %}" style="font-family: 'Poppins', sans-serif;">
+                        {{ req.status }}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-500 font-poppins">{{ req.plate }} - {{ req.model }}</p>
+            </a>
+            {% endfor %}
+
+            {% if not requests %}
+                <p class="text-gray-500 text-center mt-4 font-poppins">No requests found.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %} 
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-100 p-4 text-center text-gray-600 font-poppins">
+    Meu Footer
+</footer>
+{% endblock %}

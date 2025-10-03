@@ -1,0 +1,94 @@
+{% extends "_layout.html" %}
+{% block title %}Add Diagnostic{% endblock %}
+
+{% block content %}
+<!-- Conteúdo principal com scroll e padding para header fixo -->
+<div class="flex-1 overflow-auto pt-[150px] pb-24">
+
+    <!-- Header vermelho fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white" style="font-family: 'Poppins', sans-serif;">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white" style="font-family: 'Poppins', sans-serif;">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <!-- Avatar usuário -->
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center shadow-md">
+            <span class="text-[22px] font-semibold text-[#636161]" style="font-family: 'Poppins', sans-serif;">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+    <div class="p-6 max-w-4xl mx-auto">
+        <!-- Botão voltar -->
+        <a href="{{ url_for('home') }}" class="flex items-center text-red-primary mb-6 hover:underline">
+            <span class="text-2xl mr-2" style="font-family: 'Poppins', sans-serif;">←</span>
+            <span class="text-lg font-medium" style="font-family: 'Poppins', sans-serif;">Back</span>
+        </a>
+
+        <!-- Título -->
+        <h1 class="text-2xl font-semibold text-gray-800 mb-1" style="font-family: 'Poppins', sans-serif;">Add Diagnostic</h1>
+
+        <!-- Formulário -->
+        <form method="POST" action="{{ url_for('add_diagnostic') }}" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md space-y-4">
+            
+            <!-- Vehicle Plate -->
+            <div>
+                <label for="plate" class="block text-gray-700 font-semibold mb-2" style="font-family: 'Poppins', sans-serif;">Vehicle Plate</label>
+                <input type="text" id="plate" name="plate" placeholder="Vehicle Plate (e.g., ABC1234)" value="{{ prefill_plate or '' }}" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-600 focus:ring-red-600 text-lg" style="font-family: 'Poppins', sans-serif;">
+            </div>
+
+            <!-- Diagnostic Notes -->
+            <div>
+                <label for="diagnostic_notes" class="block text-gray-700 font-semibold mb-2" style="font-family: 'Poppins', sans-serif;">Diagnostic Notes</label>
+                <textarea id="diagnostic_notes" name="diagnostic_notes" rows="6" placeholder="Detailed notes about the vehicle issue..."
+                          class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-600 focus:ring-red-600 text-lg" style="font-family: 'Poppins', sans-serif;"></textarea>
+            </div>
+
+            <!-- Diagnostic Media -->
+            <div>
+                <label class="block text-gray-700 font-semibold mb-2" style="font-family: 'Poppins', sans-serif;">Diagnostic Media (Optional)</label>
+                <div class="flex space-x-4">
+                    <label for="photo_file" class="flex items-center justify-center p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 flex-1 text-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span class="text-sm text-blue-600 font-semibold" style="font-family: 'Poppins', sans-serif;">Add Photo</span>
+                        <input type="file" name="photo_file" id="photo_file" accept="image/*" class="hidden">
+                    </label>
+
+                    <label for="video_file" class="flex items-center justify-center p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 flex-1 text-center">
+                        <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.64v6.72a1 1 0 01-1.447.887L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span class="text-sm text-green-600 font-semibold" style="font-family: 'Poppins', sans-serif;">Add Video</span>
+                        <input type="file" name="video_file" id="video_file" accept="video/*" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botão -->
+            <div>
+                <button type="submit" 
+                        class="w-full bg-red-600 text-white py-3 rounded-lg shadow-md hover:bg-red-700 transition duration-200 text-lg font-semibold" style="font-family: 'Poppins', sans-serif;">
+                    Save Diagnostic
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block navbar %}
+    {% include 'navbar.html' %} 
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-100 p-4 text-center text-gray-600" style="font-family: 'Poppins', sans-serif;">
+    Meu Footer
+</footer>
+{% endblock %}

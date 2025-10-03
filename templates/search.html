@@ -1,0 +1,63 @@
+{% extends "_layout.html" %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="p-6 pb-24 max-w-4xl mx-auto">
+
+    <a href="{{ url_for('home') }}" class="text-red-primary mb-4 block font-poppins">
+        <span class="text-xl mr-1">←</span> Back
+    </a>
+
+    <h1 class="text-2xl font-bold mb-6 text-red-primary font-poppins">Search</h1>
+
+    <!-- Search Form -->
+    <div class="mb-6">
+        <form method="POST" action="{{ url_for('search') }}" class="flex flex-col gap-2">
+            <input type="text" 
+                   placeholder="Enter Plate or Part Name..." 
+                   class="w-full p-3 border border-gray-300 rounded-lg focus:border-red-primary text-lg font-poppins"
+                   name="search_term"
+                   value="{{ search_term if search_term else '' }}"> 
+            <button type="submit" class="hidden"></button>
+        </form>
+    </div>
+
+    <!-- Latest Diagnostic -->
+    {% if latest_diagnostic %}
+    <a href="{{ url_for('vehicle_details', plate=search_term) }}" 
+       class="block bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500 mb-6 hover:shadow-lg transition duration-150 cursor-pointer font-poppins">
+        
+        <h2 class="text-xl font-semibold mb-2 text-gray-800">{{ latest_diagnostic and 'Latest Diagnostic for ' ~ search_term }}</h2>
+        <p class="text-gray-700 p-2 bg-gray-50 border rounded whitespace-pre-wrap">{{ latest_diagnostic }}</p>
+        <span class="text-sm text-blue-600 mt-2 block font-medium">Click to view all details →</span>
+    </a>
+    {% endif %}
+
+    <!-- Search Results -->
+    {% if results is defined %}
+        {% if search_term %}
+            <h2 class="text-xl font-semibold mb-3 font-poppins">Part Requests found ({{ results | length }})</h2>
+        {% else %}
+            <h2 class="text-xl font-semibold mb-3 font-poppins">All Requests ({{ results | length }})</h2>
+        {% endif %}
+
+        <div class="space-y-3">
+            {% for req in results %}
+            <a href="{{ url_for('vehicle_details', plate=req.plate) }}" class="block p-4 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition duration-150 border-l-4 border-red-primary font-poppins">
+                <p class="font-medium text-gray-800">{{ req.plate }} - {{ req.part }}</p>
+                <p class="text-sm text-gray-500">Status: {{ req.status }}</p>
+            </a>
+            {% endfor %}
+
+            {% if not results and search_term %}
+            <p class="text-gray-500 text-center mt-8 font-poppins">No results found for "{{ search_term }}".</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %} 
+{% endblock %}

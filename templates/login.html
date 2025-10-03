@@ -1,0 +1,79 @@
+{% extends "_layout.html" %}
+{% block title %}Login - MechControl{% endblock %}
+
+{# se o seu _layout.html aceita body_classes, mantenha; senão pode remover esse bloco #}
+{% block body_classes %}min-h-screen flex items-center justify-center bg-gray-100{% endblock %}
+
+{% block content %}
+<!-- Card central -->
+<div class="w-full max-w-md bg-white rounded-xl shadow-2x0 p-8 sm:p-10">
+    <!-- Cabeçalho do card (imagem + títulos) -->
+    <div class="text-center">
+        <img src="/static/img/login.png" alt="MechControl logo" class="mx-auto mb-6 w-16 h-16 object-contain">
+        <h1 class="text-3xl font-bold text-black-500 tracking-tight">MechControl</h1>
+        <h2 class="mt-2 text-sm font-family text-gray-900">Sign in to your account</h2>
+    </div>
+
+    <!-- Flash messages (dentro do card) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="p-4 pt-6 space-y-2">
+      {% for category, message in messages %}
+        {% if message != "Please log in to view this page." %}
+                    <div class="p-3 text-sm rounded-lg 
+                        {% if category == 'success' %}bg-green-100 text-green-700{% elif category == 'danger' or category == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulário -->
+    <form class="mt-8 space-y-6" method="POST" novalidate>
+        <div>
+            <label for="username" class="sr-only">Username</label>
+            <input id="username" name="username" type="text" required
+                   placeholder="Username"
+                   class="block w-full px-4 py-4 text-sm font-medium border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 text-gray-900
+                          focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-150">
+        </div>
+
+        <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" name="password" type="password" required
+                   placeholder="Password"
+                   class="block w-full px-4 py-4 text-sm font-medium border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 text-gray-900
+                          focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-150">
+        </div>
+
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <input id="remember-me" name="remember-me" type="checkbox"
+                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
+                <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+            </div>
+
+            <div class="text-sm">
+                <a href="#" class="font-medium text-red-600 hover:text-red-700 transition duration-150">Forgot Password?</a>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent text-white font-semibold rounded-lg shadow-sm
+                           bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150">
+                LOG IN
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+            Don't have an account?
+            <a href="{{ url_for('register') }}" class="font-medium text-red-600 hover:text-red-700 transition duration-150">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

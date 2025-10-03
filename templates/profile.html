@@ -1,0 +1,60 @@
+{% extends "_layout.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<!-- Conteúdo principal com scroll e padding para header fixo -->
+<div class="flex-1 overflow-auto pt-[170px] pb-24 max-w-4xl mx-auto p-6">
+
+    <!-- Header vermelho fixo -->
+    <div class="w-full h-[150px] bg-[#E1071B] flex items-center justify-between px-6 fixed top-0 left-0 z-50">
+        <div class="flex flex-col justify-center">
+            <h1 class="text-[28px] font-extrabold text-white font-poppins">
+                MechControl
+            </h1>
+            <h2 class="text-[15px] font-normal text-white font-poppins">
+                Workshop Management System
+            </h2>
+        </div>
+
+        <div class="w-[50px] h-[50px] bg-white rounded-full flex items-center justify-center shadow-md">
+            <span class="text-[22px] font-semibold text-[#636161] font-poppins">
+                {{ session.username[:1] | upper }}{{ session.username.split(' ')[1][:1] | upper if session.username.split(' ')|length > 1 else '' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+
+    <div class="p-6 bg-white rounded-lg shadow-md space-y-6">
+        <h1 class="text-2xl font-semibold mb-6 text-red-primary font-poppins">Profile</h1>
+
+        <h2 class="text-xl font-semibold mb-4 border-b pb-2 font-poppins">User Information</h2>
+        
+        <div class="space-y-3 font-poppins text-gray-700">
+            <p><span class="font-semibold">Name:</span> {{ user_data.name }}</p>
+            <p><span class="font-semibold">Email:</span> {{ user_data.email }}</p>
+            <p><span class="font-semibold">Username:</span> {{ user_data.username }}</p>
+            <p><span class="font-semibold">Role:</span> {{ user_data.role }}</p>
+            <p><span class="font-semibold">Mobile:</span> (11) 99999-9999</p> 
+        </div>
+        
+        <div class="mt-6 pt-4 border-t">
+            <a href="{{ url_for('login') }}" 
+               class="w-full py-3 text-red-primary font-bold block text-center border border-red-primary rounded-lg hover:bg-red-50 transition duration-150 font-poppins">
+                Log Out
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %} 
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-100 p-4 text-center text-gray-600 font-poppins">
+    Meu Footer
+</footer>
+{% endblock %}
